@@ -1,0 +1,88 @@
+        body {
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: black;
+            color: white;
+        }
+        header {
+            padding: 1rem;
+            border-bottom: 1px solid white;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        main {
+            flex-grow: 1;
+            padding: 1rem;
+        }
+        .search-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        #search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 0.5rem;
+            font-family: monospace;
+            border: 1px solid white;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        .grid a {
+            display: block;
+            padding: 0.5rem;
+            border: 1px solid white;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .grid a:hover {
+            background-color: white;
+            color: black;
+        }
+        footer {
+            padding: 1rem;
+            border-top: 1px solid white;
+            font-size: 0.875rem;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            #search-input {
+                max-width: 90%;
+            }
+        }
+  
