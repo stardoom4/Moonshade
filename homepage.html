@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XXIIVV Minimalist Browser Homepage</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #000;
+            color: #fff;
+        }
+        header {
+            padding: 1rem;
+            background-color: #000;
+            color: #fff;
+            border-bottom: 1px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .datetime {
+            font-size: 1.2rem;
+        }
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        #search-input {
+            width: 100%;
+            padding: 0.5rem;
+            font-family: monospace;
+            border: 1px solid #fff;
+            background-color: #000;
+            font-size: 1rem;
+            color: #fff;
+        }
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .bookmark {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            padding: 1rem;
+            background-color: #000;
+            border: 1px solid #fff;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 50px;
+        }
+        .bookmark:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .bookmark-name {
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        footer {
+            padding: 1rem;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            border-top: 1px solid #fff;
+        }
+        .shortcuts {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+      a {
+        color: #fff;
+      }
+        @media (max-width: 600px) {
+            .bookmarks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="datetime" id="datetime">
+            <!-- Date and time will be inserted here -->
+        </div>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search bookmarks..." aria-label="Search bookmarks">
+        </div>
+        <div id="bookmarks-grid" class="bookmarks-grid">
+            <!-- Bookmarks will be dynamically inserted here -->
+        </div>
+        <div class="shortcuts">
+            <p>Keyboard Shortcuts: / - Focus Search, Esc - Clear Search</p>
+        </div>
+    </main>
+
+    <footer>
+      <p><a href="https://wunder.pages.dev">Wunder</a></p>
+    </footer>
+
+    <script>
+        const bookmarks = [
+            { name: "ChatGPT", url: "https://chat.openai.com/" },
+            { name: "Gemini", url: "https://gemini.google.com/app" },
+            { name: "Perplexity AI", url: "https://www.perplexity.ai/" },
+            { name: "Itutor", url: "https://www.aakash.ac.in/lms/login/" },
+            { name: "WikiPedia", url: "https://www.wikipedia.org/" },
+            { name: "Google", url: "https://www.google.com" },
+            { name: "Youtube", url: "https://www.youtube.com" }
+        ];
+
+        const bookmarksGrid = document.getElementById('bookmarks-grid');
+        const searchInput = document.getElementById('search-input');
+        const datetimeElement = document.getElementById('datetime');
+
+        function renderBookmarks(filteredBookmarks) {
+            bookmarksGrid.innerHTML = '';
+            filteredBookmarks.forEach((bookmark) => {
+                const bookmarkLink = document.createElement('a');
+                bookmarkLink.href = bookmark.url;
+                bookmarkLink.className = 'bookmark';
+                bookmarkLink.innerHTML = `
+                    <span class="bookmark-name">${bookmark.name}</span>
+                `;
+                bookmarksGrid.appendChild(bookmarkLink);
+            });
+        }
+
+        function filterBookmarks(searchTerm) {
+            return bookmarks.filter(bookmark => 
+                bookmark.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit'
+            };
+            datetimeElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const filteredBookmarks = filterBookmarks(e.target.value);
+            renderBookmarks(filteredBookmarks);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.value = '';
+                renderBookmarks(bookmarks);
+            }
+        });
+
+        // Update date and time every second
+        setInterval(updateDateTime, 1000);
+
+        // Initial render
+        renderBookmarks(bookmarks);
+        updateDateTime();
+    </script>
+</body>
+</html>
