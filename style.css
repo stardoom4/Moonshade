@@ -37,6 +37,10 @@
         .nav-links a:hover {
             text-decoration: underline;
         }
+        a {
+           color: #fff;
+        }
+           
         main {
             padding: 1rem;
         }
