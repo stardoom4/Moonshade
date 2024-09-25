@@ -41,8 +41,11 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
         }
         #search-input {
+            flex-grow: 1;
             width: 100%;
             padding: 0.5rem;
             font-family: monospace;
@@ -51,6 +54,21 @@
             font-size: 1rem;
             color: #fff;
         }
+
+        #search-google {
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            background-color: #000;
+            border: 1px solid #fff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #search-google:hover {
+            background-color: #fff;
+        }
+        
         .bookmarks-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -98,6 +116,13 @@
             .bookmarks-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .search-container {
+                flex-direction: column;
+            }
+            #search-google {
+                width: 100%;
+             }
         }
     </style>
 </head>
@@ -110,13 +135,14 @@
 
     <main>
         <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search bookmarks..." aria-label="Search bookmarks">
+            <input type="text" id="search-input" placeholder="Search bookmarks..." aria-label="Search bookmarks or Google">
+            <button id="search-google">Search Google</button>
         </div>
         <div id="bookmarks-grid" class="bookmarks-grid">
             <!-- Bookmarks will be dynamically inserted here -->
         </div>
         <div class="shortcuts">
-            <p>Keyboard Shortcuts: / - Focus Search, Esc - Clear Search</p>
+            <p>Keyboard Shortcuts: / - Focus Search, Esc - Clear Search, Ctrl+Enter - Search Google</p>
         </div>
     </main>
 
@@ -136,63 +162,78 @@
         ];
 
         const bookmarksGrid = document.getElementById('bookmarks-grid');
-        const searchInput = document.getElementById('search-input');
-        const datetimeElement = document.getElementById('datetime');
+const searchInput = document.getElementById('search-input');
+const datetimeElement = document.getElementById('datetime');
+const searchGoogleButton = document.getElementById('search-google');
 
-        function renderBookmarks(filteredBookmarks) {
-            bookmarksGrid.innerHTML = '';
-            filteredBookmarks.forEach((bookmark) => {
-                const bookmarkLink = document.createElement('a');
-                bookmarkLink.href = bookmark.url;
-                bookmarkLink.className = 'bookmark';
-                bookmarkLink.innerHTML = `
-                    <span class="bookmark-name">${bookmark.name}</span>
-                `;
-                bookmarksGrid.appendChild(bookmarkLink);
-            });
-        }
+function renderBookmarks(filteredBookmarks) {
+bookmarksGrid.innerHTML = '';
+filteredBookmarks.forEach((bookmark) => {
+const bookmarkLink = document.createElement('a');
+bookmarkLink.href = bookmark.url;
+bookmarkLink.className = 'bookmark';
+bookmarkLink.innerHTML = `
+<span class="bookmark-name">${bookmark.name}</span>
+`;
+bookmarksGrid.appendChild(bookmarkLink);
+});
+}
 
-        function filterBookmarks(searchTerm) {
-            return bookmarks.filter(bookmark => 
-                bookmark.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
+function filterBookmarks(searchTerm) {
+return bookmarks.filter(bookmark =>
+bookmark.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+}
 
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit'
-            };
-            datetimeElement.textContent = now.toLocaleDateString('en-US', options);
-        }
+function updateDateTime() {
+const now = new Date();
+const options = {
+weekday: 'long',
+year: 'numeric',
+month: 'long',
+day: 'numeric',
+hour: '2-digit',
+minute: '2-digit',
+second: '2-digit'
+};
+datetimeElement.textContent = now.toLocaleDateString('en-US', options);
+}
 
-        searchInput.addEventListener('input', (e) => {
-            const filteredBookmarks = filterBookmarks(e.target.value);
-            renderBookmarks(filteredBookmarks);
-        });
+function searchBookmarks() {
+const filteredBookmarks = filterBookmarks(searchInput.value);
+renderBookmarks(filteredBookmarks);
+}
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '/' && document.activeElement !== searchInput) {
-                e.preventDefault();
-                searchInput.focus();
-            } else if (e.key === 'Escape' && document.activeElement === searchInput) {
-                searchInput.value = '';
-                renderBookmarks(bookmarks);
-            }
-        });
+function searchGoogle() {
+const searchTerm = encodeURIComponent(searchInput.value);
+window.location.href = `https://www.google.com/search?q=${searchTerm}`;
+}
 
-        // Update date and time every second
-        setInterval(updateDateTime, 1000);
+searchInput.addEventListener('input', searchBookmarks);
+searchGoogleButton.addEventListener('click', searchGoogle);
 
-        // Initial render
-        renderBookmarks(bookmarks);
-        updateDateTime();
+document.addEventListener('keydown', (e) => {
+if (e.key === '/' && document.activeElement !== searchInput) {
+e.preventDefault();
+searchInput.focus();
+} else if (e.key === 'Escape' && document.activeElement === searchInput) {
+searchInput.value = '';
+renderBookmarks(bookmarks);
+} else if (e.key === 'Enter' && document.activeElement === searchInput) {
+if (e.ctrlKey) {
+searchGoogle();
+} else {
+searchBookmarks();
+}
+}
+});
+
+// Update date and time every second
+setInterval(updateDateTime, 1000);
+
+// Initial render
+renderBookmarks(bookmarks);
+updateDateTime();
     </script>
 </body>
 </html>
