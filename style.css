@@ -1,4 +1,4 @@
-        body {
+   body {
             font-family: monospace;
             margin: 0;
             padding: 0;
@@ -7,16 +7,18 @@
             color: white;
             background-image: url("https://4kwallpapers.com/images/walls/thumbs_3t/87.jpg");
             background-repeat: no-repeat; /* Do not repeat the image */
-            background-size: cover; /* Resize the background image to cover the entire container */
+            background-size: cover; 
         }
         header {
             padding: 1rem;
             border-bottom: 1px solid white;
+            background-color: #000;
         }
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: #000;
         }
         .logo {
             font-size: 1.25rem;
@@ -36,15 +38,14 @@
             text-decoration: underline;
         }
         main {
-            flex-grow: 1;
             padding: 1rem;
-            background-color: #000;
         }
         footer {
             padding: 1rem;
             border-top: 1px solid white;
             font-size: 0.875rem;
-            position: bottom;
+            position: inherit;
+            background-color: #000;
         }
         .footer-content {
             display: flex;
